@@ -54,9 +54,13 @@ async function checkViewport(name, viewport) {
   await page.getByRole("button", { name: "Reset to new test" }).click();
   await page.getByRole("heading", { name: "Agent test laboratory" }).waitFor();
   await page.waitForFunction(
-    () => document.querySelector('input:not([type="file"])')?.value === "Atlas Support Agent",
+    () => document.querySelector('input:not([type="file"])')?.value === "",
   );
   const resetClearedPreviousResult = await page.getByText("Configure the agent, then break it safely.").isVisible();
+  const resetClearedAgentName = await page.getByLabel("Agent name").inputValue() === "";
+  const resetClearedEndpoint = await page.getByLabel("HTTP endpoint").inputValue() === "";
+  const resetClearedPurpose = await page.getByLabel("Declared purpose and limits").inputValue() === "";
+  const resetDisabledRun = await page.getByRole("button", { name: /Run 10000 simulations/ }).isDisabled();
 
   results.push({
     viewport: name,
@@ -65,6 +69,10 @@ async function checkViewport(name, viewport) {
     score,
     savedRunVisible,
     resetClearedPreviousResult,
+    resetClearedAgentName,
+    resetClearedEndpoint,
+    resetClearedPurpose,
+    resetDisabledRun,
     consoleErrors,
   });
   await context.close();
@@ -79,6 +87,10 @@ try {
       result.labOverflow ||
       !result.savedRunVisible ||
       !result.resetClearedPreviousResult ||
+      !result.resetClearedAgentName ||
+      !result.resetClearedEndpoint ||
+      !result.resetClearedPurpose ||
+      !result.resetDisabledRun ||
       result.consoleErrors.length > 0,
   );
   console.log(JSON.stringify({ passed: !failed, results }, null, 2));

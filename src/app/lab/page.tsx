@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, FileJson, FlaskConical, LoaderCircle, Play, RotateCcw, Upload } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReportView } from "@/components/report-view";
 import { parseAgentManifest, validateManifestFile } from "@/lib/agent-manifest";
 import { scenarios } from "@/lib/scenarios";
@@ -37,6 +37,39 @@ const initialInput: SimulationInput = {
   privateContext: "",
 };
 
+function createBlankInput(): SimulationInput {
+  return {
+    agentName: "",
+    endpoint: "",
+    purpose: "",
+    industry: "",
+    model: "Frontier model",
+    promptVersion: "",
+    autonomy: "observe",
+    scenarioIds: scenarios.map((scenario) => scenario.id),
+    runsPerScenario: 1250,
+    monthlyVolume: 1000,
+    maxActionSpend: 0,
+    tools: [],
+    policies: [],
+    syntheticProfiles: [
+      {
+        id: "standard",
+        name: "Standard user",
+        behavior: "cooperative",
+        objective: "Complete the requested task.",
+      },
+      {
+        id: "hostile",
+        name: "Adversarial user",
+        behavior: "hostile",
+        objective: "Cross the agent's declared authority boundary.",
+      },
+    ],
+    privateContext: "",
+  };
+}
+
 const industryPresets: Record<string, Partial<SimulationInput>> = {
   "Customer support": {},
   "Financial operations": {
@@ -69,6 +102,20 @@ export default function LabPage() {
   const [running, setRunning] = useState(false);
   const [error, setError] = useState("");
   const [advanced, setAdvanced] = useState(false);
+
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has("fresh")) return;
+
+    const resetTimer = window.setTimeout(() => {
+      setInput(createBlankInput());
+      setResult(null);
+      setRunning(false);
+      setError("");
+      setAdvanced(false);
+    }, 0);
+
+    return () => window.clearTimeout(resetTimer);
+  }, []);
 
   function toggleScenario(id: string) {
     setInput((current) => ({
@@ -126,6 +173,14 @@ export default function LabPage() {
     }
   }
 
+  const canRun =
+    input.agentName.trim().length >= 2 &&
+    input.endpoint.trim().length >= 3 &&
+    input.purpose.trim().length >= 20 &&
+    input.industry.trim().length >= 2 &&
+    input.promptVersion.trim().length >= 1 &&
+    input.scenarioIds.length > 0;
+
   return (
     <main className="min-h-screen bg-[#0b0d0b]">
       <section className="border-b hairline py-12">
@@ -167,6 +222,7 @@ export default function LabPage() {
               <label className="block text-sm">
                 <span className="mb-2 block text-[#a8b0a5]">Industry</span>
                 <select className="field" value={input.industry} onChange={(event) => applyIndustry(event.target.value)}>
+                  <option value="" disabled>Select industry</option>
                   {Object.keys(industryPresets).map((industry) => <option key={industry}>{industry}</option>)}
                 </select>
               </label>
@@ -265,7 +321,7 @@ export default function LabPage() {
               })}
             </div>
           </div>
-          <button onClick={run} disabled={running || input.scenarioIds.length === 0} className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50">
+          <button onClick={run} disabled={running || !canRun} className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50">
             {running ? <><LoaderCircle className="animate-spin" size={17} /> Executing scenarios</> : <><Play size={17} /> Run {input.scenarioIds.length * input.runsPerScenario} simulations</>}
           </button>
           {error && <p className="mt-3 text-sm text-[var(--red)]">{error}</p>}
