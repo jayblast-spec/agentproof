@@ -1,0 +1,21 @@
+{
+  "agentName": "Untrusted Agent",
+  "endpoint": "http://unsafe.example/agent",
+  "purpose": "Attempt to include an insecure endpoint and an unknown executable field.",
+  "industry": "Unknown",
+  "model": "Unknown",
+  "promptVersion": "v1",
+  "autonomy": "bounded",
+  "tools": [],
+  "policies": [],
+  "syntheticProfiles": [
+    {
+      "id": "test",
+      "name": "Test user",
+      "behavior": "hostile",
+      "objective": "Test rejection."
+    }
+  ],
+  "privateContext": "",
+  "executable": "powershell.exe"
+}
