@@ -44,6 +44,17 @@ async function checkViewport(name, viewport) {
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({ path: `${screenshotDir}/lab-result-${name}.png`, fullPage: true });
 
+  await page.getByRole("button", { name: "New run" }).click();
+  await page.getByRole("button", { name: "Live connector" }).click();
+  await page.getByRole("button", { name: "Execute 100 live connector trials" }).click();
+  await page.getByTestId("evidence-mode").filter({ hasText: "live execution evidence" }).waitFor({ timeout: 30000 });
+  await page.getByTestId("endpoint-status").filter({ hasText: "Endpoint contacted" }).waitFor();
+  const liveSignatureVerified = await page.getByText("Signature verified", { exact: true }).isVisible();
+  const liveToolEffectsIntercepted = await page.getByText("Tool effects intercepted", { exact: true }).isVisible();
+  const liveTrialCount = await page.getByText("100", { exact: true }).first().isVisible();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: `${screenshotDir}/lab-live-${name}.png`, fullPage: true });
+
   await page.goto(`${baseUrl}/projects`, { waitUntil: "networkidle" });
   await page.getByText("Ledger Finance Agent", { exact: true }).first().waitFor();
   const savedRunVisible = await page.getByText("10,000 trials", { exact: false }).first().isVisible();
@@ -60,6 +71,9 @@ async function checkViewport(name, viewport) {
     labOverflow,
     score,
     savedRunVisible,
+    liveSignatureVerified,
+    liveToolEffectsIntercepted,
+    liveTrialCount,
     resetClearedPreviousResult,
     consoleErrors,
   });
@@ -74,6 +88,9 @@ try {
       result.homeOverflow ||
       result.labOverflow ||
       !result.savedRunVisible ||
+      !result.liveSignatureVerified ||
+      !result.liveToolEffectsIntercepted ||
+      !result.liveTrialCount ||
       !result.resetClearedPreviousResult ||
       result.consoleErrors.length > 0,
   );

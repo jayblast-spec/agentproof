@@ -19,6 +19,7 @@ const tone = {
 
 export function ReportView({ result }: { result: SimulationResult }) {
   const evidenceLabel = result.evidence.mode.replaceAll("_", " ");
+  const isLive = result.evidence.mode === "live_execution";
 
   return (
     <div className="space-y-6">
@@ -43,6 +44,19 @@ export function ReportView({ result }: { result: SimulationResult }) {
             <p className="mt-3 text-xs leading-5 text-[#858e83]">
               Evidence inputs: {result.evidence.inputs.join(" / ")}
             </p>
+            {isLive && (
+              <div className="mt-4 flex flex-wrap gap-2 text-[10px] uppercase tracking-[0.1em]">
+                <span className="border border-[#b8ff58]/30 px-2 py-1 text-[var(--signal)]">
+                  Signature {result.evidence.signatureVerified ? "verified" : "unverified"}
+                </span>
+                <span className="border border-[#b8ff58]/30 px-2 py-1 text-[var(--signal)]">
+                  Tool effects {result.evidence.toolSideEffects}
+                </span>
+                <span className="border hairline px-2 py-1 text-[#aeb6ac]">
+                  {result.evidence.connector}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -123,7 +137,9 @@ export function ReportView({ result }: { result: SimulationResult }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="panel p-5">
               <CircleDollarSign size={20} className="text-[var(--signal)]" />
-              <span className="mt-6 block text-xs text-[#858e83]">Estimated monthly test cost</span>
+              <span className="mt-6 block text-xs text-[#858e83]">
+                {isLive ? "Observed connector cost" : "Estimated monthly test cost"}
+              </span>
               <strong className="mt-1 block font-mono text-2xl">${result.estimatedMonthlyCost}</strong>
             </div>
             <div className="panel p-5">
@@ -133,14 +149,28 @@ export function ReportView({ result }: { result: SimulationResult }) {
             </div>
           </div>
           <div className="panel p-6">
-            <p className="eyebrow">Calibration</p>
-            <div className="mt-5 grid grid-cols-2 gap-4">
-              <div><span className="text-xs text-[#858e83]">Expected pass rate</span><strong className="mt-1 block font-mono text-xl">{result.calibration.expectedPassRate}%</strong></div>
-              <div><span className="text-xs text-[#858e83]">Observed pass rate</span><strong className="mt-1 block font-mono text-xl">{result.calibration.observedPassRate}%</strong></div>
-            </div>
-            <div className="mt-5 border-t hairline pt-4 text-sm text-[#aeb6ac]">
-              Calibration error: <strong className="font-mono text-white">{result.calibration.calibrationError}%</strong> across {result.calibration.sampleSize.toLocaleString()} trials.
-            </div>
+            <p className="eyebrow">{isLive ? "Evidence integrity" : "Calibration"}</p>
+            {isLive ? (
+              <>
+                <div className="mt-5 grid grid-cols-2 gap-4">
+                  <div><span className="text-xs text-[#858e83]">Returned trials</span><strong className="mt-1 block font-mono text-xl">{result.totalRuns}</strong></div>
+                  <div><span className="text-xs text-[#858e83]">Scored trials</span><strong className="mt-1 block font-mono text-xl">{result.calibration.sampleSize}</strong></div>
+                </div>
+                <div className="mt-5 border-t hairline pt-4 text-sm text-[#aeb6ac]">
+                  Signed response matched the requested run. Production tool side effects remained disabled.
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mt-5 grid grid-cols-2 gap-4">
+                  <div><span className="text-xs text-[#858e83]">Expected pass rate</span><strong className="mt-1 block font-mono text-xl">{result.calibration.expectedPassRate}%</strong></div>
+                  <div><span className="text-xs text-[#858e83]">Observed pass rate</span><strong className="mt-1 block font-mono text-xl">{result.calibration.observedPassRate}%</strong></div>
+                </div>
+                <div className="mt-5 border-t hairline pt-4 text-sm text-[#aeb6ac]">
+                  Calibration error: <strong className="font-mono text-white">{result.calibration.calibrationError}%</strong> across {result.calibration.sampleSize.toLocaleString()} trials.
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ReportView } from "@/components/report-view";
 import { parseAgentManifest, validateManifestFile } from "@/lib/agent-manifest";
 import { scenarios } from "@/lib/scenarios";
-import type { SimulationInput, SimulationResult } from "@/lib/types";
+import type { ExecutionMode, SimulationInput, SimulationResult } from "@/lib/types";
 
 const initialInput: SimulationInput = {
   agentName: "Atlas Support Agent",
@@ -102,6 +102,7 @@ export default function LabPage() {
   const [running, setRunning] = useState(false);
   const [error, setError] = useState("");
   const [advanced, setAdvanced] = useState(false);
+  const [executionMode, setExecutionMode] = useState<ExecutionMode>("synthetic");
 
   useEffect(() => {
     if (!new URLSearchParams(window.location.search).has("fresh")) return;
@@ -130,6 +131,21 @@ export default function LabPage() {
     setInput((current) => ({ ...current, ...industryPresets[industry], industry }));
   }
 
+  function selectExecutionMode(mode: ExecutionMode) {
+    setExecutionMode(mode);
+    setResult(null);
+    setError("");
+    setInput((current) => ({
+      ...current,
+      endpoint:
+        mode === "live_demo"
+          ? "internal://agentproof/demo-agent"
+          : current.endpoint === "internal://agentproof/demo-agent"
+            ? "https://api.example.com/agent"
+            : current.endpoint,
+    }));
+  }
+
   async function importManifest(file: File) {
     setError("");
     try {
@@ -150,7 +166,7 @@ export default function LabPage() {
     setResult(null);
     try {
       await new Promise((resolve) => setTimeout(resolve, 850));
-      const response = await fetch("/api/simulate", {
+      const response = await fetch(executionMode === "live_demo" ? "/api/live-test" : "/api/simulate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(input),
@@ -191,7 +207,12 @@ export default function LabPage() {
               <h1 className="text-4xl font-semibold sm:text-6xl">Agent test laboratory</h1>
               <p className="copy mt-4 max-w-2xl">Configure authority, select failure conditions, and execute a reproducible readiness test.</p>
             </div>
-            <div className="flex items-center gap-3 text-xs text-[#8d968b]"><span className="status-dot" /> Sandbox online — no external endpoint is called in demo mode</div>
+            <div className="flex items-center gap-3 text-xs text-[#8d968b]">
+              <span className="status-dot" />
+              {executionMode === "live_demo"
+                ? "Controlled connector online - signed requests, intercepted tools"
+                : "Synthetic model online - endpoint is not contacted"}
+            </div>
           </div>
         </div>
       </section>
@@ -203,6 +224,38 @@ export default function LabPage() {
             <FlaskConical className="text-[var(--signal)]" />
           </div>
           <div className="mt-7 space-y-5">
+            <div>
+              <span className="mb-2 block text-sm text-[#a8b0a5]">Evidence mode</span>
+              <div className="grid grid-cols-2 border hairline bg-[#0d100d] p-1">
+                <button
+                  type="button"
+                  className={`min-h-11 px-3 text-xs font-semibold ${
+                    executionMode === "synthetic"
+                      ? "bg-[var(--signal)] text-black"
+                      : "text-[#9da69a]"
+                  }`}
+                  onClick={() => selectExecutionMode("synthetic")}
+                >
+                  Synthetic model
+                </button>
+                <button
+                  type="button"
+                  className={`min-h-11 px-3 text-xs font-semibold ${
+                    executionMode === "live_demo"
+                      ? "bg-[var(--signal)] text-black"
+                      : "text-[#9da69a]"
+                  }`}
+                  onClick={() => selectExecutionMode("live_demo")}
+                >
+                  Live connector
+                </button>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-[#7f897d]">
+                {executionMode === "live_demo"
+                  ? "Executes 100 signed requests against AgentProof's controlled test agent. All tool actions are intercepted."
+                  : "Models 10,000 reproducible outcomes from the declared configuration without contacting the endpoint."}
+              </p>
+            </div>
             <label className="flex min-h-24 cursor-pointer items-center justify-center gap-3 border border-dashed border-[#b8ff58]/35 bg-[#b8ff58]/[.045] px-4 text-center text-sm text-[#d9e1d6]">
               <Upload size={17} className="text-[var(--signal)]" />
               <span>
@@ -242,7 +295,12 @@ export default function LabPage() {
             </label>
             <label className="block text-sm">
               <span className="mb-2 block text-[#a8b0a5]">HTTP endpoint</span>
-              <input className="field font-mono text-xs" value={input.endpoint} onChange={(event) => setInput({ ...input, endpoint: event.target.value })} />
+              <input
+                className="field font-mono text-xs disabled:cursor-not-allowed disabled:text-[#788176]"
+                value={input.endpoint}
+                disabled={executionMode === "live_demo"}
+                onChange={(event) => setInput({ ...input, endpoint: event.target.value })}
+              />
             </label>
             <label className="block text-sm">
               <span className="mb-2 block text-[#a8b0a5]">Declared purpose and limits</span>
@@ -322,7 +380,13 @@ export default function LabPage() {
             </div>
           </div>
           <button onClick={run} disabled={running || !canRun} className="btn-primary mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50">
-            {running ? <><LoaderCircle className="animate-spin" size={17} /> Executing scenarios</> : <><Play size={17} /> Run {input.scenarioIds.length * input.runsPerScenario} simulations</>}
+            {running ? (
+              <><LoaderCircle className="animate-spin" size={17} /> Executing scenarios</>
+            ) : executionMode === "live_demo" ? (
+              <><Play size={17} /> Execute 100 live connector trials</>
+            ) : (
+              <><Play size={17} /> Run {input.scenarioIds.length * input.runsPerScenario} simulations</>
+            )}
           </button>
           {error && <p className="mt-3 text-sm text-[var(--red)]">{error}</p>}
         </aside>

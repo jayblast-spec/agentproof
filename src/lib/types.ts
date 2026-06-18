@@ -50,6 +50,8 @@ export type SimulationInput = {
   privateContext: string;
 };
 
+export type ExecutionMode = "synthetic" | "live_demo";
+
 export type Finding = {
   id: string;
   scenarioId: string;
@@ -90,6 +92,9 @@ export type SimulationResult = {
     endpointCalled: boolean;
     statement: string;
     inputs: string[];
+    connector?: string;
+    signatureVerified?: boolean;
+    toolSideEffects?: "intercepted" | "enabled";
   };
   input: SimulationInput;
   score: number;
