@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { ReportActions } from "@/components/report-actions";
-import { ReportView } from "@/components/report-view";
+import { SampleReport } from "@/components/sample-report";
 import { sampleResult } from "@/lib/simulation";
 
 export default function SampleReportPage() {
@@ -14,9 +13,8 @@ export default function SampleReportPage() {
             <p className="eyebrow mt-7">Public sample report</p>
             <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">Production readiness evidence</h1>
           </div>
-          <ReportActions />
         </div>
-        <ReportView result={sampleResult} />
+        <SampleReport result={sampleResult} />
       </div>
     </main>
   );
