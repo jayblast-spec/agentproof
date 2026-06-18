@@ -85,6 +85,12 @@ export type TrialOutcome = {
 export type SimulationResult = {
   id: string;
   createdAt: string;
+  evidence: {
+    mode: "synthetic" | "connector_verified" | "live_execution";
+    endpointCalled: boolean;
+    statement: string;
+    inputs: string[];
+  };
   input: SimulationInput;
   score: number;
   readiness: "ready" | "conditional" | "failed";

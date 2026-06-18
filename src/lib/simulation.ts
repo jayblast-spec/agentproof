@@ -181,6 +181,19 @@ export function runSimulation(input: SimulationInput): SimulationResult {
   return {
     id: `run_${seed.toString(36)}`,
     createdAt: new Date().toISOString(),
+    evidence: {
+      mode: "synthetic",
+      endpointCalled: false,
+      statement:
+        "AgentProof executed deterministic synthetic trials against this manifest's tools, permissions, policies, autonomy, model profile, and user profiles. The configured agent endpoint was not contacted.",
+      inputs: [
+        "Agent manifest",
+        "Tool permissions",
+        "Policy controls",
+        "Synthetic user profiles",
+        "Scenario library",
+      ],
+    },
     input,
     score,
     readiness:

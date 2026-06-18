@@ -4,6 +4,7 @@ import {
   CheckCircle2,
   CircleDollarSign,
   Clock3,
+  FlaskConical,
   ShieldAlert,
 } from "lucide-react";
 import type { SimulationResult } from "@/lib/types";
@@ -17,8 +18,35 @@ const tone = {
 };
 
 export function ReportView({ result }: { result: SimulationResult }) {
+  const evidenceLabel = result.evidence.mode.replaceAll("_", " ");
+
   return (
     <div className="space-y-6">
+      <section className="panel border-[#b8ff58]/25 bg-[#111711] p-5 sm:p-6">
+        <div className="flex items-start gap-4">
+          <div className="grid size-10 shrink-0 place-items-center border border-[#b8ff58]/30 bg-[#b8ff58]/5 text-[var(--signal)]">
+            <FlaskConical size={19} />
+          </div>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="eyebrow" data-testid="evidence-mode">{evidenceLabel} evidence</p>
+              <span
+                className="border border-[#ffbd55]/35 px-2 py-1 text-[10px] uppercase tracking-[0.12em] text-[#ffbd55]"
+                data-testid="endpoint-status"
+              >
+                Endpoint {result.evidence.endpointCalled ? "contacted" : "not contacted"}
+              </span>
+            </div>
+            <p className="mt-3 max-w-4xl text-sm leading-6 text-[#c5ccc2]">
+              {result.evidence.statement}
+            </p>
+            <p className="mt-3 text-xs leading-5 text-[#858e83]">
+              Evidence inputs: {result.evidence.inputs.join(" / ")}
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="panel grid gap-8 p-6 sm:p-8 lg:grid-cols-[auto_1fr]">
         <ScoreRing score={result.score} />
         <div>

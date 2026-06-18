@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { ReportActions } from "@/components/report-actions";
 import { ReportView } from "@/components/report-view";
 import { sampleResult } from "@/lib/simulation";
 
@@ -13,7 +14,7 @@ export default function SampleReportPage() {
             <p className="eyebrow mt-7">Public sample report</p>
             <h1 className="mt-3 text-4xl font-semibold sm:text-5xl">Production readiness evidence</h1>
           </div>
-          <button className="btn-secondary"><Download size={16} /> Download PDF</button>
+          <ReportActions />
         </div>
         <ReportView result={sampleResult} />
       </div>

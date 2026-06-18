@@ -37,6 +37,8 @@ async function checkViewport(name, viewport) {
   await runButton.click();
   await page.getByText("Readiness", { exact: true }).first().waitFor({ timeout: 30000 });
   await page.getByText("10,000", { exact: true }).waitFor();
+  await page.getByTestId("evidence-mode").filter({ hasText: "synthetic evidence" }).waitFor();
+  await page.getByTestId("endpoint-status").filter({ hasText: "Endpoint not contacted" }).waitFor();
   const score = await page.locator(".score-ring strong").innerText();
   const labOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   await page.evaluate(() => window.scrollTo(0, 0));
@@ -46,6 +48,11 @@ async function checkViewport(name, viewport) {
   await page.getByText("Ledger Finance Agent", { exact: true }).first().waitFor();
   const savedRunVisible = await page.getByText("10,000 trials", { exact: false }).first().isVisible();
   await page.screenshot({ path: `${screenshotDir}/projects-${name}.png`, fullPage: true });
+
+  await page.goto(`${baseUrl}/reports/sample`, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Reset to new test" }).waitFor();
+  await page.getByRole("button", { name: "Reset to new test" }).click();
+  await page.getByRole("heading", { name: "Agent test laboratory" }).waitFor();
 
   results.push({
     viewport: name,
