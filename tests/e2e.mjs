@@ -53,6 +53,10 @@ async function checkViewport(name, viewport) {
   await page.getByRole("button", { name: "Reset to new test" }).waitFor();
   await page.getByRole("button", { name: "Reset to new test" }).click();
   await page.getByRole("heading", { name: "Agent test laboratory" }).waitFor();
+  await page.waitForFunction(
+    () => document.querySelector('input:not([type="file"])')?.value === "Atlas Support Agent",
+  );
+  const resetClearedPreviousResult = await page.getByText("Configure the agent, then break it safely.").isVisible();
 
   results.push({
     viewport: name,
@@ -60,6 +64,7 @@ async function checkViewport(name, viewport) {
     labOverflow,
     score,
     savedRunVisible,
+    resetClearedPreviousResult,
     consoleErrors,
   });
   await context.close();
@@ -73,6 +78,7 @@ try {
       result.homeOverflow ||
       result.labOverflow ||
       !result.savedRunVisible ||
+      !result.resetClearedPreviousResult ||
       result.consoleErrors.length > 0,
   );
   console.log(JSON.stringify({ passed: !failed, results }, null, 2));
