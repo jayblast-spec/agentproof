@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.vercel
+test-results
+tests
+*.log
+AGENTS.md
+CLAUDE.md
