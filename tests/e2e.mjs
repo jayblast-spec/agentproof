@@ -73,13 +73,15 @@ async function checkViewport(name, viewport) {
   if (name === "desktop") {
     const pairingKey = process.env.AGENTPROOF_PAIRING_KEY;
     if (!pairingKey) throw new Error("AGENTPROOF_PAIRING_KEY is required for connector UI verification.");
+    await page.getByLabel("Owner access key").fill(pairingKey);
+    await page.getByRole("button", { name: "Sign in securely" }).click();
+    await page.getByRole("heading", { name: /connected environments/ }).waitFor({ timeout: 30000 });
     await page.getByLabel("Runner name").fill(`Browser Runner ${Date.now()}`);
-    await page.getByLabel("Pairing key").fill(pairingKey);
     await page.getByRole("button", { name: "Pair runner" }).click();
-    await page.getByText("Runner paired", { exact: true }).waitFor({ timeout: 30000 });
+    await page.getByText("Download now. This configuration is shown once.", { exact: true }).waitFor({ timeout: 30000 });
     pairingSuccess = await page.getByRole("button", { name: "Download config" }).isVisible();
-    await page.getByRole("button", { name: "Queue signed test job" }).click();
-    await page.getByText("Job queued", { exact: true }).waitFor({ timeout: 30000 });
+    await page.getByRole("button", { name: "Queue test" }).first().click();
+    await page.getByText("Latest job", { exact: true }).waitFor({ timeout: 30000 });
     jobQueued = true;
   }
   await page.screenshot({ path: `${screenshotDir}/connectors-${name}.png`, fullPage: true });

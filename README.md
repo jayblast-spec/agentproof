@@ -21,9 +21,10 @@ AgentProof is an agent simulation and production-readiness platform. It executes
 ```bash
 npm install
 $env:AGENTPROOF_DEMO_CONNECTOR_SECRET="replace-with-at-least-32-random-characters"
-$env:AGENTPROOF_CONTROL_PLANE_URL="https://PROJECT.supabase.co/functions/v1/agentproof-control-plane"
+$env:AGENTPROOF_CONTROL_PLANE_URL="https://PROJECT.supabase.co/functions/v1/agentproof-control-plane-v2"
 $env:AGENTPROOF_CONTROL_PLANE_ADMIN_KEY="server-only-admin-key"
 $env:AGENTPROOF_PAIRING_KEY="owner-pairing-key"
+$env:AGENTPROOF_SESSION_SECRET="server-only-cookie-signing-secret"
 npm run dev
 ```
 
@@ -55,6 +56,8 @@ node runner/agentproof-runner.mjs \
 ```
 
 The runner pulls jobs outbound from Supabase, executes a demo or HTTP dry-run adapter, signs `jobId.nonce.resultDigest`, and submits evidence. Supabase atomically leases jobs and rejects a completed nonce if it is submitted again.
+
+The connector control room uses an eight-hour HttpOnly owner session. It supports runner status, last-seen monitoring, pause/resume, permanent revocation, queued jobs, and persisted readiness reports.
 
 ## Manifest security
 

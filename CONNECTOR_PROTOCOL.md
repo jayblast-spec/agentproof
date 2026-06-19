@@ -51,5 +51,10 @@ The customer-runner control plane now adds:
 - signed result digests;
 - replay rejection after completion;
 - RLS-enabled Supabase tables with no anonymous policies.
+- eight-hour HttpOnly owner sessions for the connector control room;
+- cross-origin mutation rejection;
+- runner pause, resume, last-seen, and permanent revocation controls;
+- one persisted readiness report per completed job;
+- a hardened v2 control-plane endpoint, while v1 remains available for rollback.
 
 The HTTP reference adapter requires HTTPS except for localhost and sends only a dry-run contract. Customer production credentials remain outside AgentProof.

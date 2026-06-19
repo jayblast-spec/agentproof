@@ -1,4 +1,5 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
+import type { NextRequest } from "next/server";
 
 function required(name: string) {
   const value = process.env[name];
@@ -15,6 +16,38 @@ function safeEqual(left: string, right: string) {
 export function authorizePairingKey(supplied: string) {
   const expected = process.env.AGENTPROOF_PAIRING_KEY;
   return Boolean(expected && supplied.length >= 16 && safeEqual(supplied, expected));
+}
+
+function sessionSecret() {
+  return required("AGENTPROOF_SESSION_SECRET");
+}
+
+function sessionSignature(expiresAt: string) {
+  return createHmac("sha256", sessionSecret()).update(`owner.${expiresAt}`).digest("base64url");
+}
+
+export function createOwnerSession() {
+  const expiresAt = String(Date.now() + 8 * 60 * 60 * 1000);
+  return `${expiresAt}.${sessionSignature(expiresAt)}`;
+}
+
+export function authorizeOwnerRequest(request: NextRequest | Request) {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const value = cookieHeader
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.startsWith("agentproof_owner="))
+    ?.slice("agentproof_owner=".length);
+  if (!value) return false;
+  const [expiresAt, signature] = value.split(".");
+  if (!expiresAt || !signature || Number(expiresAt) <= Date.now()) return false;
+  return safeEqual(signature, sessionSignature(expiresAt));
+}
+
+export function authorizeOwnerMutation(request: NextRequest | Request) {
+  if (!authorizeOwnerRequest(request)) return false;
+  const origin = request.headers.get("origin");
+  return !origin || origin === new URL(request.url).origin;
 }
 
 export async function controlPlaneRequest(body: Record<string, unknown>) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { authorizePairingKey, controlPlaneRequest } from "@/lib/control-plane";
+import { authorizeOwnerMutation, controlPlaneRequest } from "@/lib/control-plane";
 
 const schema = z.object({
   name: z.string().trim().min(2).max(100),
@@ -12,12 +12,12 @@ const schema = z.object({
     y: z.string().min(20),
     ext: z.boolean().optional(),
     key_ops: z.array(z.string()).optional(),
-  }).passthrough(),
+  }).strict(),
 }).strict();
 
 export async function POST(request: Request) {
-  if (!authorizePairingKey(request.headers.get("x-agentproof-pairing-key") ?? "")) {
-    return NextResponse.json({ error: "Invalid pairing key." }, { status: 401 });
+  if (!authorizeOwnerMutation(request)) {
+    return NextResponse.json({ error: "Owner authentication required." }, { status: 401 });
   }
   const parsed = schema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) {

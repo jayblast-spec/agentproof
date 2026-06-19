@@ -1,4 +1,5 @@
 import { ConnectorPairing } from "@/components/connector-pairing";
+import { RunnerFlowIllustration } from "@/components/runner-flow-illustration";
 
 export const metadata = {
   title: "Connect Agent Runner",
@@ -23,7 +24,8 @@ export default function ConnectorsPage() {
             ))}
           </div>
         </div>
-        <div className="py-10">
+        <div className="space-y-8 py-10">
+          <RunnerFlowIllustration />
           <ConnectorPairing />
         </div>
       </div>
