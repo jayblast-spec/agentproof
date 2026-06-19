@@ -41,11 +41,15 @@ The controlled connector is contacted. Returned responses and tool proposals are
 
 ### Future customer connector
 
-External connectors must add:
+The customer-runner control plane now adds:
 
-- per-customer secrets or public-key signatures;
-- durable nonce storage and replay prevention;
-- customer-side runners or network-isolated execution;
-- strict egress policy and SSRF protection;
-- production telemetry and human ground-truth labels;
-- versioned agent, prompt, model, and tool manifests.
+- browser-generated P-256 signing keys;
+- runner tokens stored only as SHA-256 hashes;
+- outbound job pulling from the customer's environment;
+- atomic job leasing with `FOR UPDATE SKIP LOCKED`;
+- durable job nonces and one-time completion;
+- signed result digests;
+- replay rejection after completion;
+- RLS-enabled Supabase tables with no anonymous policies.
+
+The HTTP reference adapter requires HTTPS except for localhost and sends only a dry-run contract. Customer production credentials remain outside AgentProof.

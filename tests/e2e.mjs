@@ -65,6 +65,25 @@ async function checkViewport(name, viewport) {
   await page.getByRole("heading", { name: "No test result loaded" }).waitFor();
   const resetClearedPreviousResult = !(await page.getByText("Atlas Support Agent", { exact: true }).isVisible().catch(() => false));
 
+  await page.goto(`${baseUrl}/connectors`, { waitUntil: "networkidle" });
+  await page.getByRole("heading", { name: "Connect Agent Runner" }).waitFor();
+  const connectorOverflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  let pairingSuccess = true;
+  let jobQueued = true;
+  if (name === "desktop") {
+    const pairingKey = process.env.AGENTPROOF_PAIRING_KEY;
+    if (!pairingKey) throw new Error("AGENTPROOF_PAIRING_KEY is required for connector UI verification.");
+    await page.getByLabel("Runner name").fill(`Browser Runner ${Date.now()}`);
+    await page.getByLabel("Pairing key").fill(pairingKey);
+    await page.getByRole("button", { name: "Pair runner" }).click();
+    await page.getByText("Runner paired", { exact: true }).waitFor({ timeout: 30000 });
+    pairingSuccess = await page.getByRole("button", { name: "Download config" }).isVisible();
+    await page.getByRole("button", { name: "Queue signed test job" }).click();
+    await page.getByText("Job queued", { exact: true }).waitFor({ timeout: 30000 });
+    jobQueued = true;
+  }
+  await page.screenshot({ path: `${screenshotDir}/connectors-${name}.png`, fullPage: true });
+
   results.push({
     viewport: name,
     homeOverflow,
@@ -75,6 +94,9 @@ async function checkViewport(name, viewport) {
     liveToolEffectsIntercepted,
     liveTrialCount,
     resetClearedPreviousResult,
+    connectorOverflow,
+    pairingSuccess,
+    jobQueued,
     consoleErrors,
   });
   await context.close();
@@ -87,11 +109,14 @@ try {
     (result) =>
       result.homeOverflow ||
       result.labOverflow ||
+      result.connectorOverflow ||
       !result.savedRunVisible ||
       !result.liveSignatureVerified ||
       !result.liveToolEffectsIntercepted ||
       !result.liveTrialCount ||
       !result.resetClearedPreviousResult ||
+      !result.pairingSuccess ||
+      !result.jobQueued ||
       result.consoleErrors.length > 0,
   );
   console.log(JSON.stringify({ passed: !failed, results }, null, 2));

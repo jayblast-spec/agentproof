@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "node tests/e2e.mjs"
+    "test:e2e": "node tests/e2e.mjs",
+    "test:runner": "node tests/runner-integration.mjs",
+    "runner:once": "node runner/agentproof-runner.mjs --once"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",
