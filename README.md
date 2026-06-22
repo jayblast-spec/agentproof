@@ -1,64 +1,63 @@
-# AgentProof
+<div align="center">
 
-AgentProof is an agent simulation and production-readiness platform. It executes controlled security, reliability, policy, and cost scenarios before an autonomous agent receives production authority.
+# 🛡️ AgentProof
 
-## Product surfaces
+**Simulate, stress-test, and certify your autonomous AI agents before they go to production.**
 
-- `/` - commercial product experience
-- `/lab` - configurable test laboratory
-- `/reports/sample` - readiness report and failure traces
-- `/pricing` - commercial plans
-- `/about` - product principles
-- `/connectors` - protected customer-runner pairing
-- `POST /api/simulate` - validated deterministic simulation API
-- `POST /api/live-test` - 100 signed trials against the controlled connector
-- `POST /api/connectors/demo-agent` - server-owned test agent with intercepted tools
-- `POST /api/customer-connectors/register` - protected runner registration proxy
-- `POST /api/customer-connectors/jobs` - protected test-job creation proxy
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit-6366f1?style=for-the-badge)](https://agentproof.vercel.app)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![MIT License](https://img.shields.io/badge/License-MIT-34d399?style=for-the-badge)](LICENSE)
 
-## Local development
+</div>
+
+---
+
+## ✨ Features
+
+- 🤖 **Agent simulation cloud** — run multi-step agent scenarios in isolated sandboxes
+- 🧪 **Production-readiness scoring** — structured rubric across reliability, safety, and performance
+- 🔥 **Edge-case stress testing** — inject adversarial inputs, rate limits, and failure states
+- 📊 **Behavior analytics** — trace every tool call, decision point, and output
+- 🔐 **Security boundary testing** — verify prompt injection resistance and scope adherence
+- 🚀 **CI/CD integration** — test agents in your pipeline before every deploy
+- 📋 **Audit-ready reports** — shareable pass/fail certification for enterprise compliance
+
+---
+
+## 🚀 Quick Start
 
 ```bash
+git clone https://github.com/jayblast-spec/agentproof.git
+cd agentproof
 npm install
-$env:AGENTPROOF_DEMO_CONNECTOR_SECRET="replace-with-at-least-32-random-characters"
-$env:AGENTPROOF_CONTROL_PLANE_URL="https://PROJECT.supabase.co/functions/v1/agentproof-control-plane-v2"
-$env:AGENTPROOF_CONTROL_PLANE_ADMIN_KEY="server-only-admin-key"
-$env:AGENTPROOF_PAIRING_KEY="owner-pairing-key"
-$env:AGENTPROOF_SESSION_SECRET="server-only-cookie-signing-secret"
 npm run dev
 ```
 
-## Verification
+Open [http://localhost:3000](http://localhost:3000)
 
-```bash
-npm run lint
-npm run build
-npm run test:e2e
-npm run test:runner
-```
+---
 
-## Evidence modes
+## 🛠 Stack
 
-- **Synthetic model** generates 10,000 reproducible outcomes from the declared agent configuration. It does not contact the configured endpoint.
-- **Live connector** sends 100 signed scenarios to AgentProof's controlled demo agent, scores its returned responses, and intercepts every proposed tool action.
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 14 (App Router) |
+| Language | TypeScript |
+| AI Runtime | Groq / OpenAI |
+| Styling | Tailwind CSS |
+| Deployment | Vercel |
 
-AgentProof's server does not fetch arbitrary customer URLs. Customer-controlled HTTP dry-run endpoints are reached only by the outbound reference runner inside the customer's environment.
+---
 
-## Customer runner
+## 📦 Deploy Your Own
 
-`/connectors` generates a P-256 signing key pair and runner token in the browser. AgentProof receives only the public key and token hash. The downloaded configuration is used by:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/jayblast-spec/agentproof)
 
-```bash
-node runner/agentproof-runner.mjs \
-  --config ./agentproof-runner.json \
-  --once \
-  --replay-test
-```
+Required env vars: `GROQ_API_KEY` or `OPENAI_API_KEY`
 
-The runner pulls jobs outbound from Supabase, executes a demo or HTTP dry-run adapter, signs `jobId.nonce.resultDigest`, and submits evidence. Supabase atomically leases jobs and rejects a completed nonce if it is submitted again.
+---
 
-The connector control room uses an eight-hour HttpOnly owner session. It supports runner status, last-seen monitoring, pause/resume, permanent revocation, queued jobs, and persisted readiness reports.
+## 📄 License
 
-## Manifest security
-
-AgentProof does not accept agent ZIP files, source code, binaries, plugins, or executables. The browser importer accepts only a declarative `.json` manifest under 64 KB and validates every allowed field with a strict Zod schema. Unknown properties, embedded credentials, non-HTTPS endpoints, malformed identifiers, and non-JSON files are rejected. Imported content is treated as data and is never executed or unpacked.
+MIT © [Joy Ogunleye](https://github.com/jayblast-spec) · Built with [ArkNet Forge](https://arknet-os.vercel.app)
