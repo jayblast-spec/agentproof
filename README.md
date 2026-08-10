@@ -1,63 +1,56 @@
 <div align="center">
 
-# 🛡️ AgentProof
+# AgentProof
 
-**Simulate, stress-test, and certify your autonomous AI agents before they go to production.**
+### Agent Reliability Infrastructure
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Visit-6366f1?style=for-the-badge)](https://agentproof-ten.vercel.app)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![MIT License](https://img.shields.io/badge/License-MIT-34d399?style=for-the-badge)](LICENSE)
+AgentProof runs controlled simulations against autonomous AI agents before they touch production — authority testing, adversarial scenarios, failure replay, and operational-cost measurement, scored into a readiness report your team can act on.
+
+<p>
+  <a href="https://agentproof-ten.vercel.app"><img alt="Live Demo" src="https://img.shields.io/badge/Live-Demo-1D4ED8?style=for-the-badge&logo=vercel&logoColor=white"></a>
+  <a href="https://github.com/jayblast-spec/agentproof"><img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white"></a>
+</p>
+
+<p>
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=next.js&logoColor=white">
+  <img alt="React" src="https://img.shields.io/badge/React%2019-149ECA?style=flat-square&logo=react&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white">
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white">
+  <img alt="Framer Motion" src="https://img.shields.io/badge/Framer%20Motion-1D4ED8?style=flat-square&logo=framer&logoColor=white">
+  <img alt="Zod" src="https://img.shields.io/badge/Zod-3E67B1?style=flat-square&logo=zod&logoColor=white">
+  <img alt="Playwright" src="https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white">
+</p>
+
+<p>
+  <img alt="Animated AgentProof headline" src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=700&size=18&duration=2600&pause=650&color=1D4ED8&center=true&vCenter=true&width=760&lines=Declare+%E2%86%92+Simulate+%E2%86%92+Repair+%E2%86%92+Release;Test+agents+before+they+touch+reality;Authority%2C+injection%2C+outage%2C+cost+scenarios;Every+failure+becomes+a+reproducible+trace">
+</p>
 
 </div>
 
----
+## What It Does
 
-## ✨ Features
+AgentProof executes thousands of controlled scenarios against an AI agent instead of describing what might go wrong. It runs authority tests (tool calls beyond declared permissions), adversarial scenarios (prompt injection, sensitive-data exposure, outage, impersonation, retry loops), and operational-economics checks (task success rate, p95 latency, model usage, retries, projected monthly cost). Every failure is captured with the exact decision, tool call, policy result, and system response so it can be replayed and turned into a regression test. Results are split into separate security, reliability, policy, and cost scores so a strong average cannot hide a critical failure.
 
-- 🤖 **Agent simulation cloud** — run multi-step agent scenarios in isolated sandboxes
-- 🧪 **Production-readiness scoring** — structured rubric across reliability, safety, and performance
-- 🔥 **Edge-case stress testing** — inject adversarial inputs, rate limits, and failure states
-- 📊 **Behavior analytics** — trace every tool call, decision point, and output
-- 🔐 **Security boundary testing** — verify prompt injection resistance and scope adherence
-- 🚀 **CI/CD integration** — test agents in your pipeline before every deploy
-- 📋 **Audit-ready reports** — shareable pass/fail certification for enterprise compliance
+## How It Works
 
----
+Built on Next.js 16 (App Router) with React 19 and TypeScript. The `/lab` route runs simulations against a declared agent contract; `/reports/sample` renders a full readiness report with category scores and findings. Server logic lives under `src/app/api/` (`simulate`, `live-test`, `connectors`, `customer-connectors`, `owner`), with `runner/agentproof-runner.mjs` available for scheduled or CI-triggered runs (`npm run runner:once`). Zod validates scenario and result contracts; Framer Motion drives the readiness UI; Tailwind v4 (via `@tailwindcss/postcss`) handles styling; Playwright (`playwright-core`) powers end-to-end and runner integration tests (`npm run test:e2e`, `npm run test:runner`).
 
-## 🚀 Quick Start
+## Live
 
-```bash
-git clone https://github.com/jayblast-spec/agentproof.git
-cd agentproof
-npm install
-npm run dev
-```
+https://agentproof-ten.vercel.app
 
-Open [http://localhost:3000](http://localhost:3000)
-
----
-
-## 🛠 Stack
+## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 14 (App Router) |
-| Language | TypeScript |
-| AI Runtime | Groq / OpenAI |
-| Styling | Tailwind CSS |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, TypeScript, Tailwind CSS v4 |
+| Motion | Framer Motion |
+| Validation | Zod |
+| Icons | Lucide React |
+| Testing | Playwright (E2E + runner integration) |
 | Deployment | Vercel |
 
----
-
-## 📦 Deploy Your Own
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/jayblast-spec/agentproof)
-
-Required env vars: `GROQ_API_KEY` or `OPENAI_API_KEY`
-
----
-
-## 📄 License
-
-MIT © [Joy Ogunleye](https://github.com/jayblast-spec) · [ArkNet.digital](https://arknet.digital)
+<p align="center">
+  <img alt="ArkNet Digital footer" src="https://capsule-render.vercel.app/api?type=waving&height=120&color=0:1D4ED8,55:0B1E3D,100:020617&section=footer&text=ArkNet%20Digital&fontColor=FFFFFF&fontSize=24&fontAlign=50&fontAlignY=65&desc=michael@arknet.digital&descAlign=50&descAlignY=85">
+</p>
