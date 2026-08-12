@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { runSimulation } from "@/lib/simulation";
 import { simulationSchema } from "@/lib/validation";
+import { persistReport } from "@/lib/db";
 
 export async function POST(request: Request) {
   const payload = await request.json().catch(() => null);
@@ -11,5 +12,9 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  return NextResponse.json(runSimulation(parsed.data));
+  const result = runSimulation(parsed.data);
+  persistReport(result, "demo_execution").catch((err) =>
+    console.error("agentproof_reports insert failed:", err instanceof Error ? err.message : err),
+  );
+  return NextResponse.json(result);
 }

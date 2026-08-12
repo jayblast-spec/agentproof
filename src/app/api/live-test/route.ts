@@ -8,6 +8,7 @@ import {
 import { buildLiveReport } from "@/lib/live-report";
 import { scenarioMap } from "@/lib/scenarios";
 import { simulationSchema } from "@/lib/validation";
+import { persistReport } from "@/lib/db";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -98,8 +99,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Connector evidence integrity check failed." }, { status: 502 });
   }
 
-  return NextResponse.json(
-    buildLiveReport(parsed.data, connectorResponse, Math.round(performance.now() - startedAt)),
-    { headers: { "Cache-Control": "no-store" } },
+  const result = buildLiveReport(parsed.data, connectorResponse, Math.round(performance.now() - startedAt));
+  persistReport(result, "live_execution").catch((err) =>
+    console.error("agentproof_reports insert failed:", err instanceof Error ? err.message : err),
   );
+  return NextResponse.json(result, { headers: { "Cache-Control": "no-store" } });
 }
