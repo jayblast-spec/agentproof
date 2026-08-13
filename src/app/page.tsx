@@ -128,7 +128,9 @@ export default function Home() {
           <div className="mt-16 grid border-l border-t border-[#c7cdc3] md:grid-cols-2">
             {features.map(([Icon, title, description]) => (
               <article key={title as string} className="border-b border-r border-[#c7cdc3] p-7 sm:p-10">
-                <Icon size={24} strokeWidth={1.7} />
+                <span className="icon-3d">
+                  <Icon size={20} strokeWidth={1.8} />
+                </span>
                 <h3 className="mt-14 text-2xl font-semibold">{title as string}</h3>
                 <p className="mt-4 max-w-md leading-7 text-[#5d655b]">{description as string}</p>
               </article>
