@@ -61,11 +61,6 @@ button { cursor: pointer; }
     radial-gradient(60% 50% at 50% 0%, rgba(47, 179, 194, .16), transparent 70%),
     var(--ink);
 }
-.noise {
-  background-image: url("/media/simulation-chamber.png");
-  background-size: cover;
-  background-position: center;
-}
 .panel {
   border: 1px solid var(--line);
   background: rgba(19, 23, 19, .88);
