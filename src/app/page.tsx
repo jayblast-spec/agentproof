@@ -23,116 +23,106 @@ const features = [
 export default function Home() {
   return (
     <main>
-      <section className="relative min-h-[calc(100svh-64px)] overflow-hidden border-b hairline">
-        <div className="absolute inset-0 noise opacity-35" aria-hidden="true" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,#090b0a_0%,rgba(9,11,10,.93)_42%,rgba(9,11,10,.38)_100%)]" />
-        <div className="absolute inset-0 grid-bg opacity-50" />
-        <div className="shell relative grid min-h-[calc(100svh-64px)] items-center gap-12 py-16 lg:grid-cols-[.95fr_1.05fr]">
-          <div className="max-w-3xl">
-            <div className="flex items-center gap-3">
-              <span className="status-dot" />
-              <span className="eyebrow">Agent reliability infrastructure</span>
-            </div>
-            <h1 className="display mt-7">Test agents before they touch reality.</h1>
-            <p className="copy mt-8 max-w-xl text-lg">
-              Execute thousands of controlled scenarios against your AI agent. Find unsafe tool calls,
-              brittle reasoning, cost loops, and policy failures before production does.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link href="/lab" className="btn-primary">
-                Run a readiness test <ArrowRight size={17} />
-              </Link>
-              <Link href="/reports/sample" className="btn-secondary">
-                <Play size={16} /> Inspect sample report
-              </Link>
-            </div>
-            <div className="mt-12 grid grid-cols-2 gap-6 border-t hairline pt-7 sm:grid-cols-4">
-              {[
-                ["10K+", "simulated runs"],
-                ["8", "attack classes"],
-                ["100%", "replayable"],
-                ["0", "production access"],
-              ].map(([value, label]) => (
-                <div key={label}>
-                  <strong className="font-mono text-xl">{value}</strong>
-                  <span className="mt-1 block text-xs text-[#8b9489]">{label}</span>
-                </div>
-              ))}
-            </div>
+      <section className="sky-bg grid-bg relative flex min-h-[calc(100svh-64px)] flex-col items-center justify-center overflow-hidden px-4 py-20 text-center">
+        <div className="relative z-10 flex max-w-3xl flex-col items-center gap-6">
+          <div className="flex items-center gap-2 rounded-full border border-[var(--signal)]/30 px-4 py-1.5 text-xs font-semibold text-[var(--signal-2)]" style={{ background: "color-mix(in srgb, var(--signal) 14%, transparent)" }}>
+            <span className="status-dot" /> Agent reliability infrastructure
           </div>
 
-          <div className="panel relative p-3 sm:p-5">
-            <div className="border hairline bg-[#0d100d] p-5 sm:p-7">
-              <div className="flex items-center justify-between border-b hairline pb-5">
-                <div>
-                  <p className="eyebrow">Simulation 04 / running</p>
-                  <h2 className="mt-2 text-xl font-semibold">Atlas Support Agent</h2>
-                </div>
-                <span className="flex items-center gap-2 text-xs text-[var(--signal)]">
-                  <span className="status-dot" /> Live
-                </span>
+          <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl">
+            Test agents
+            <br />
+            <span className="bg-gradient-to-r from-[var(--signal)] to-[var(--signal-2)] bg-clip-text text-transparent">
+              before they touch reality.
+            </span>
+          </h1>
+
+          <p className="max-w-xl text-base text-[var(--muted)] sm:text-lg">
+            Execute thousands of controlled scenarios against your AI agent. Find unsafe tool calls,
+            brittle reasoning, cost loops, and policy failures before production does.
+          </p>
+
+          <div className="flex flex-col items-center gap-3 sm:flex-row">
+            <Link href="/lab" className="btn-primary">
+              Run a readiness test <ArrowRight size={17} />
+            </Link>
+            <Link href="/reports/sample" className="btn-secondary">
+              <Play size={16} /> Inspect sample report
+            </Link>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-6 border-t border-[var(--line)] pt-6 sm:grid-cols-4">
+            {[
+              ["10K+", "simulated runs"],
+              ["8", "attack classes"],
+              ["100%", "replayable"],
+              ["0", "production access"],
+            ].map(([value, label]) => (
+              <div key={label}>
+                <strong className="font-mono text-xl">{value}</strong>
+                <span className="mt-1 block text-xs text-[var(--muted)]">{label}</span>
               </div>
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                {[
-                  ["Indirect injection", "Blocked", "security"],
-                  ["Refund authority", "Review", "policy"],
-                  ["Tool outage", "Passed", "reliability"],
-                  ["Retry cascade", "Running", "cost"],
-                ].map(([title, status, category], index) => (
-                  <div key={title} className="border hairline bg-[#151915] p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] uppercase text-[#727b70]">{category}</span>
-                      <span className={index === 1 ? "text-xs text-[var(--amber)]" : "text-xs text-[var(--signal)]"}>{status}</span>
-                    </div>
-                    <strong className="mt-6 block text-sm">{title}</strong>
-                    <div className="mt-4 h-1 bg-[#2b302b]">
-                      <div className="h-full bg-[var(--signal)]" style={{ width: `${58 + index * 11}%` }} />
-                    </div>
+            ))}
+          </div>
+
+          {/* Live simulation preview card */}
+          <div className="mt-4 w-full max-w-md rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 text-left shadow-2xl">
+            <div className="flex items-center justify-between border-b border-[var(--line)] pb-4">
+              <div>
+                <p className="eyebrow">Simulation 04 / running</p>
+                <h2 className="mt-1.5 text-lg font-semibold">Atlas Support Agent</h2>
+              </div>
+              <span className="flex items-center gap-2 text-xs text-[var(--signal)]">
+                <span className="status-dot" /> Live
+              </span>
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                ["Indirect injection", "Blocked", "security"],
+                ["Refund authority", "Review", "policy"],
+              ].map(([title, status, category], index) => (
+                <div key={title} className="rounded-xl border border-[var(--line)] bg-[var(--surface-2)] p-3">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] uppercase text-[var(--muted)]">{category}</span>
+                    <span className={index === 1 ? "text-xs text-[var(--amber)]" : "text-xs text-[var(--signal)]"}>{status}</span>
                   </div>
-                ))}
-              </div>
-              <div className="mt-5 border hairline bg-[#111411] p-5">
-                <div className="flex justify-between text-xs text-[#8e978c]">
-                  <span>Execution trace</span><span className="font-mono">run_ap_04c9</span>
+                  <strong className="mt-4 block text-sm">{title}</strong>
+                  <div className="mt-3 h-1 rounded-full bg-[var(--surface)]">
+                    <div className="h-full rounded-full bg-[var(--signal)]" style={{ width: `${58 + index * 11}%` }} />
+                  </div>
                 </div>
-                <div className="mt-5 space-y-5">
-                  {[
-                    ["Synthetic customer", "Requests refund beyond declared threshold"],
-                    ["Atlas agent", "Calls refund.prepare for $1,240"],
-                    ["AgentProof guard", "Approval token missing — execution blocked"],
-                  ].map(([actor, detail]) => (
-                    <div key={actor} className="flex gap-3">
-                      <span className="mt-1.5 size-2 shrink-0 bg-[var(--signal)]" />
-                      <div><strong className="block text-xs">{actor}</strong><span className="text-xs text-[#899287]">{detail}</span></div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
-      <section id="product" className="border-b hairline bg-[#eef1ea] py-24 text-[#101310]">
+      <section id="product" className="border-b hairline py-24">
         <div className="shell">
-          <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
-            <div>
-              <p className="eyebrow !text-[#46631f]">Not another agent dashboard</p>
-              <h2 className="section-title mt-5">Evidence, not confidence theatre.</h2>
-            </div>
-            <div className="max-w-2xl text-xl leading-9 text-[#4d544b]">
+          <div className="mb-12 text-center">
+            <p className="eyebrow justify-center">Not another agent dashboard</p>
+            <h2 className="mt-5 text-2xl font-bold sm:text-3xl">
+              Evidence, not{" "}
+              <span className="bg-gradient-to-r from-[var(--signal)] to-[var(--signal-2)] bg-clip-text text-transparent">
+                confidence theatre.
+              </span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-[var(--muted)]">
               Chat interfaces can explain what might fail. AgentProof executes the failure conditions,
               measures the result, and preserves the trace so your team can reproduce it.
-            </div>
+            </p>
           </div>
-          <div className="mt-16 grid border-l border-t border-[#c7cdc3] md:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {features.map(([Icon, title, description]) => (
-              <article key={title as string} className="border-b border-r border-[#c7cdc3] p-7 sm:p-10">
+              <article
+                key={title as string}
+                className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-6 transition-colors hover:border-[var(--signal)]/40"
+              >
                 <span className="icon-3d">
                   <Icon size={20} strokeWidth={1.8} />
                 </span>
-                <h3 className="mt-14 text-2xl font-semibold">{title as string}</h3>
-                <p className="mt-4 max-w-md leading-7 text-[#5d655b]">{description as string}</p>
+                <h3 className="mt-5 text-lg font-semibold">{title as string}</h3>
+                <p className="copy mt-2 text-sm leading-relaxed">{description as string}</p>
               </article>
             ))}
           </div>

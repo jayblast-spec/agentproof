@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #090b0a;
+  --ink: #0c0a0a;
   --ink-2: #111411;
-  --surface: #171b17;
-  --surface-2: #1f241f;
+  --surface: #141210;
+  --surface-2: #1c1917;
   --line: rgba(232, 239, 228, 0.13);
-  --muted: #9aa398;
-  --paper: #f0f3ec;
-  --signal: #b8ff58;
-  --signal-2: #d7ff9e;
+  --muted: #9a9591;
+  --paper: #f5f4f2;
+  --signal: #2fb3c2;
+  --signal-2: #7fdbe6;
   --amber: #ffbd55;
-  --red: #ff6c63;
+  --red: #f87171;
 }
 
 * { box-sizing: border-box; }
@@ -55,6 +55,11 @@ button { cursor: pointer; }
     linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
   background-size: 54px 54px;
+}
+.sky-bg {
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(47, 179, 194, .16), transparent 70%),
+    var(--ink);
 }
 .noise {
   background-image: url("/media/simulation-chamber.png");
