@@ -35,6 +35,16 @@ AgentProof executes thousands of controlled scenarios against an AI agent instea
 
 Built on Next.js 16 (App Router) with React 19 and TypeScript. The `/lab` route runs simulations against a declared agent contract; `/reports/sample` renders a full readiness report with category scores and findings. Server logic lives under `src/app/api/` (`simulate`, `live-test`, `connectors`, `customer-connectors`, `owner`), with `runner/agentproof-runner.mjs` available for scheduled or CI-triggered runs (`npm run runner:once`). Zod validates scenario and result contracts; Framer Motion drives the readiness UI; Tailwind v4 (via `@tailwindcss/postcss`) handles styling; Playwright (`playwright-core`) powers end-to-end and runner integration tests (`npm run test:e2e`, `npm run test:runner`).
 
+## Engineering Notes
+
+**The real problem:** you can't tell if an agent config is safe by reading it — a "financial, write-permission, unbounded-autonomy" agent and a "read-only, approval-gated" one look similar on paper but carry very different real-world risk.
+
+**The approach:** `simulation.ts` runs a seeded, deterministic risk model — a `sin`-based hash seeds reproducible pseudo-randomness so the same input always produces the same simulation, and risk is built from named weighted factors rather than one opaque score: autonomy level (`observe: -10` to `bounded: +10`), tool permission tier (`read: 0` to `destructive: +11`), policy enforcement strength (`+3` per block rule), and endpoint/context signals.
+
+**One real number:** base risk is bounded to a 4–62 range before behavioral trials run — a `destructive`, unbounded-autonomy agent with no block policies starts near the ceiling regardless of what the simulation trials find afterward.
+
+**Not handled yet:** the weights are an engineered rubric, not learned from real incident data — it hasn't been validated against actual production agent failures yet, so treat scores as relative risk ranking, not calibrated probability.
+
 ## Live
 
 https://agentproof-ten.vercel.app
