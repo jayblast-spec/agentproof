@@ -7,7 +7,6 @@
 AgentProof runs controlled simulations against autonomous AI agents before they touch production — authority testing, adversarial scenarios, failure replay, and operational-cost measurement, scored into a readiness report your team can act on.
 
 <p>
-  <a href="https://agentproof-ten.vercel.app"><img alt="Live Demo" src="https://img.shields.io/badge/Live-Demo-1D4ED8?style=for-the-badge&logo=vercel&logoColor=white"></a>
   <a href="https://github.com/jayblast-spec/agentproof"><img alt="GitHub Repo" src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white"></a>
 </p>
 
@@ -47,7 +46,7 @@ Built on Next.js 16 (App Router) with React 19 and TypeScript. The `/lab` route 
 
 ## Live
 
-https://agentproof-ten.vercel.app
+*(demo temporarily offline)*
 
 ## Tech Stack
 
